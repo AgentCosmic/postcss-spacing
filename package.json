@@ -1,0 +1,10 @@
+{
+  "name": "postcss-spacing",
+  "version": "1.0.0",
+  "description": "Generate spacing utilities classes with margins and paddings",
+  "main": "index.js",
+  "scripts": {
+  },
+  "author": "Dalton Tan",
+  "license": "ISC"
+}
