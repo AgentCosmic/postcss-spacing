@@ -36,7 +36,7 @@ You can also use negative margins by prending `n` to the size such as `ml-n2`.
 Install plugin.
 
 ```
-npm i -D postcss-spacing
+npm i -D @daltontan/postcss-spacing
 ```
 
 Add to you PostCSS config:
@@ -44,7 +44,7 @@ Add to you PostCSS config:
 ```
 module.exports = {
 	plugins: [
-		require('postcss-spacing'),
+		require('@daltontan/postcss-spacing'),
 	]
 }
 ```
