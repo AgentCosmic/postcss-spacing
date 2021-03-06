@@ -52,8 +52,10 @@ module.exports = {
 Add to your CSS file:
 
 ```
-@generate-spacing;
+@generate-spacing();
 ```
+
+The argument is important because cssnano will remove it if it does not have an argument.
 
 ## Options
 

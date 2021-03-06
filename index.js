@@ -1,19 +1,17 @@
+/**
+ * Usage:
+ * @generate-spacing();
+ * cssnano will remove it if it does not have an argument.
+ */
+
 module.exports = (opts = {}) => {
 	return {
 		postcssPlugin: 'postcss-spacing',
-		Once(root, api) {
-			root.walkAtRules(atRule => {
-				if (atRule.name === 'generate-spacing') {
-					spacingPlugin(opts, atRule, api)
-				}
-			})
-		},
-		// cssnano will delete it if we use AtRule
-		// AtRule: {
-		// 	'generate-spacing': (atRule, api) => {
-		// 		spacingPlugin(opts, atRule, api)
-		// 	}
-		// }
+		AtRule: {
+			'generate-spacing': (atRule, api) => {
+				spacingPlugin(opts, atRule, api)
+			}
+		}
 	}
 }
 module.exports.postcss = true
