@@ -1,11 +1,16 @@
 {
-  "name": "@daltontan/postcss-spacing",
-  "version": "1.0.1",
-  "description": "Generate spacing utilities classes with margins and paddings",
-  "repository": "https://github.com/AgentCosmic/postcss-spacing/",
-  "main": "index.js",
-  "scripts": {
-  },
-  "author": "Dalton Tan",
-  "license": "ISC"
+	"name": "@daltontan/postcss-spacing",
+	"version": "1.0.1",
+	"description": "Generate spacing utilities classes with margins and paddings",
+	"repository": "https://github.com/AgentCosmic/postcss-spacing/",
+	"main": "index.js",
+	"author": "Dalton Tan",
+	"license": "ISC",
+	"scripts": {
+		"test": "postcss ./test.css"
+	},
+	"devDependencies": {
+		"postcss": "^8.3.5",
+		"postcss-cli": "^8.3.1"
+	}
 }

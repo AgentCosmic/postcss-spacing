@@ -1,7 +1,7 @@
 /**
  * Usage:
  * @generate-spacing();
- * cssnano will remove it if it does not have an argument.
+ * cssnano will remove it if it does not have the paranthesis.
  */
 
 module.exports = (opts = {}) => {
@@ -10,13 +10,13 @@ module.exports = (opts = {}) => {
 		AtRule: {
 			'generate-spacing': (atRule, api) => {
 				spacingPlugin(opts, atRule, api)
-			}
-		}
+			},
+		},
 	}
 }
 module.exports.postcss = true
 
-function spacingPlugin(opts, placeholder, { Rule, Declaration, Comment }) {
+function spacingPlugin(opts, placeholder, { Rule, Declaration }) {
 	const unit = opts.unit || 0.25
 	const directions = {
 		// placed in order so that they can overwrite correctly
@@ -42,16 +42,20 @@ function spacingPlugin(opts, placeholder, { Rule, Declaration, Comment }) {
 		const postfix = multiplier < 0 ? 'n' + Math.abs(multiplier) : multiplier
 		const rule = new Rule({ selector: `.${alias}${direction}-${postfix}` })
 		if (direction === '') {
-			rule.append(new Declaration({
-				prop: type,
-				value: multiply(multiplier) + 'rem'
-			}))
+			rule.append(
+				new Declaration({
+					prop: type,
+					value: multiply(multiplier) + 'rem !important',
+				})
+			)
 		} else {
 			props.map((cur) => {
-				rule.append(new Declaration({
-					prop: `${type}-${cur}`,
-					value: multiply(multiplier) + 'rem'
-				}))
+				rule.append(
+					new Declaration({
+						prop: `${type}-${cur}`,
+						value: multiply(multiplier) + 'rem !important',
+					})
+				)
 			})
 		}
 		placeholder.after(rule)
@@ -68,29 +72,45 @@ function spacingPlugin(opts, placeholder, { Rule, Declaration, Comment }) {
 			}
 		}
 	}
-	placeholder.after(new Rule({ selector: `.mr-a` }).append(new Declaration({
-		prop: 'margin-right',
-		value: 'auto'
-	}), new Declaration({
-		prop: 'display',
-		value: 'block'
-	})))
-	placeholder.after(new Rule({ selector: `.ml-a` }).append(new Declaration({
-		prop: 'margin-left',
-		value: 'auto'
-	}), new Declaration({
-		prop: 'display',
-		value: 'block'
-	})))
-	placeholder.after(new Rule({ selector: `.mx-a` }).append(new Declaration({
-		prop: 'margin-left',
-		value: 'auto'
-	}), new Declaration({
-		prop: 'margin-right',
-		value: 'auto'
-	}), new Declaration({
-		prop: 'display',
-		value: 'block'
-	})))
+	placeholder.after(
+		new Rule({ selector: `.mr-a` }).append(
+			new Declaration({
+				prop: 'margin-right',
+				value: 'auto !important',
+			}),
+			new Declaration({
+				prop: 'display',
+				value: 'block',
+			})
+		)
+	)
+	placeholder.after(
+		new Rule({ selector: `.ml-a` }).append(
+			new Declaration({
+				prop: 'margin-left',
+				value: 'auto !important',
+			}),
+			new Declaration({
+				prop: 'display',
+				value: 'block',
+			})
+		)
+	)
+	placeholder.after(
+		new Rule({ selector: `.mx-a` }).append(
+			new Declaration({
+				prop: 'margin-left',
+				value: 'auto !important',
+			}),
+			new Declaration({
+				prop: 'margin-right',
+				value: 'auto !important',
+			}),
+			new Declaration({
+				prop: 'display',
+				value: 'block',
+			})
+		)
+	)
 	placeholder.remove()
 }
