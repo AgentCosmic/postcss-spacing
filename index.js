@@ -72,6 +72,8 @@ function spacingPlugin(opts, placeholder, { Rule, Declaration }) {
 			}
 		}
 	}
+
+	// margin auto
 	placeholder.after(
 		new Rule({ selector: `.mr-a` }).append(
 			new Declaration({
@@ -112,5 +114,58 @@ function spacingPlugin(opts, placeholder, { Rule, Declaration }) {
 			})
 		)
 	)
+	placeholder.after(
+		new Rule({ selector: `.mt-a` }).append(
+			new Declaration({
+				prop: 'margin-top',
+				value: 'auto !important',
+			}),
+			new Declaration({
+				prop: 'display',
+				value: 'block',
+			})
+		)
+	)
+	placeholder.after(
+		new Rule({ selector: `.mb-a` }).append(
+			new Declaration({
+				prop: 'margin-bottom',
+				value: 'auto !important',
+			}),
+			new Declaration({
+				prop: 'display',
+				value: 'block',
+			})
+		)
+	)
+	placeholder.after(
+		new Rule({ selector: `.my-a` }).append(
+			new Declaration({
+				prop: 'margin-top',
+				value: 'auto !important',
+			}),
+			new Declaration({
+				prop: 'margin-bottom',
+				value: 'auto !important',
+			}),
+			new Declaration({
+				prop: 'display',
+				value: 'block',
+			})
+		)
+	)
+	placeholder.after(
+		new Rule({ selector: `.m-a` }).append(
+			new Declaration({
+				prop: 'margin',
+				value: 'auto !important',
+			}),
+			new Declaration({
+				prop: 'display',
+				value: 'block',
+			})
+		)
+	)
+
 	placeholder.remove()
 }
