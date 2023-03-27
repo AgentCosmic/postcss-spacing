@@ -9,15 +9,32 @@ module.exports = (opts = {}) => {
 		postcssPlugin: 'postcss-spacing',
 		AtRule: {
 			'generate-spacing': (atRule, api) => {
-				spacingPlugin(opts, atRule, api)
+				spacingPlugin(opts, atRule, api);
 			},
 		},
-	}
-}
-module.exports.postcss = true
+	};
+};
+module.exports.postcss = true;
 
-function spacingPlugin(opts, placeholder, { Rule, Declaration }) {
-	const unit = opts.unit || 0.25
+const defaults = {
+	unit: 0.25,
+	start: 0,
+	end: 4,
+};
+
+function spacingPlugin(opts, atRule, { Rule, Declaration }) {
+	// use the params to overwrite the build time config
+	const params = Object.fromEntries(parseParams(atRule.params));
+	for (const k in params) {
+		opts[k] = params[k];
+	}
+	// set options with defaults
+	for (const k in defaults) {
+		if (!opts.hasOwnProperty(k)) {
+			opts[k] = defaults[k];
+		}
+	}
+
 	const directions = {
 		// placed in order so that they can overwrite correctly
 		t: ['top'],
@@ -27,27 +44,27 @@ function spacingPlugin(opts, placeholder, { Rule, Declaration }) {
 		x: ['left', 'right'],
 		y: ['top', 'bottom'],
 		'': [],
-	}
+	};
 
 	function multiply(n) {
-		let result = n ? (n < 0 ? -unit : unit) : 0
-		n = Math.abs(n)
+		let result = n ? (n < 0 ? -opts.unit : opts.unit) : 0;
+		n = Math.abs(n);
 		for (let i = 1; i < n; i++) {
-			result *= 2
+			result *= 2;
 		}
-		return result
+		return result;
 	}
 
 	function generate(type, alias, direction, props, multiplier) {
-		const postfix = multiplier < 0 ? 'n' + Math.abs(multiplier) : multiplier
-		const rule = new Rule({ selector: `.${alias}${direction}-${postfix}` })
+		const postfix = multiplier < 0 ? 'n' + Math.abs(multiplier) : multiplier;
+		const rule = new Rule({ selector: `.${alias}${direction}-${postfix}` });
 		if (direction === '') {
 			rule.append(
 				new Declaration({
 					prop: type,
 					value: multiply(multiplier) + 'rem !important',
 				})
-			)
+			);
 		} else {
 			props.map((cur) => {
 				rule.append(
@@ -55,26 +72,26 @@ function spacingPlugin(opts, placeholder, { Rule, Declaration }) {
 						prop: `${type}-${cur}`,
 						value: multiply(multiplier) + 'rem !important',
 					})
-				)
-			})
+				);
+			});
 		}
-		placeholder.after(rule)
+		atRule.after(rule);
 	}
 
-	const start = opts.start || 0
-	const end = opts.end || 4
+	// generate margins and paddings
 	for (let dir in directions) {
 		// can start from negative to allow negative margins
-		for (let i = start; i <= end; i++) {
-			generate('margin', 'm', dir, directions[dir], i)
+		for (let i = opts.start; i <= opts.end; i++) {
+			generate('margin', 'm', dir, directions[dir], i);
+			// padding cannot be negative
 			if (i >= 0) {
-				generate('padding', 'p', dir, directions[dir], i)
+				generate('padding', 'p', dir, directions[dir], i);
 			}
 		}
 	}
 
 	// margin auto
-	placeholder.after(
+	atRule.after(
 		new Rule({ selector: `.mr-a` }).append(
 			new Declaration({
 				prop: 'margin-right',
@@ -85,8 +102,8 @@ function spacingPlugin(opts, placeholder, { Rule, Declaration }) {
 				value: 'block',
 			})
 		)
-	)
-	placeholder.after(
+	);
+	atRule.after(
 		new Rule({ selector: `.ml-a` }).append(
 			new Declaration({
 				prop: 'margin-left',
@@ -97,8 +114,8 @@ function spacingPlugin(opts, placeholder, { Rule, Declaration }) {
 				value: 'block',
 			})
 		)
-	)
-	placeholder.after(
+	);
+	atRule.after(
 		new Rule({ selector: `.mx-a` }).append(
 			new Declaration({
 				prop: 'margin-left',
@@ -113,8 +130,8 @@ function spacingPlugin(opts, placeholder, { Rule, Declaration }) {
 				value: 'block',
 			})
 		)
-	)
-	placeholder.after(
+	);
+	atRule.after(
 		new Rule({ selector: `.mt-a` }).append(
 			new Declaration({
 				prop: 'margin-top',
@@ -125,8 +142,8 @@ function spacingPlugin(opts, placeholder, { Rule, Declaration }) {
 				value: 'block',
 			})
 		)
-	)
-	placeholder.after(
+	);
+	atRule.after(
 		new Rule({ selector: `.mb-a` }).append(
 			new Declaration({
 				prop: 'margin-bottom',
@@ -137,8 +154,8 @@ function spacingPlugin(opts, placeholder, { Rule, Declaration }) {
 				value: 'block',
 			})
 		)
-	)
-	placeholder.after(
+	);
+	atRule.after(
 		new Rule({ selector: `.my-a` }).append(
 			new Declaration({
 				prop: 'margin-top',
@@ -153,8 +170,8 @@ function spacingPlugin(opts, placeholder, { Rule, Declaration }) {
 				value: 'block',
 			})
 		)
-	)
-	placeholder.after(
+	);
+	atRule.after(
 		new Rule({ selector: `.m-a` }).append(
 			new Declaration({
 				prop: 'margin',
@@ -165,7 +182,20 @@ function spacingPlugin(opts, placeholder, { Rule, Declaration }) {
 				value: 'block',
 			})
 		)
-	)
+	);
 
-	placeholder.remove()
+	// gaps for flexbox and grid
+	for (let i = Math.max(0, opts.start); i <= opts.end; i++) {
+		generate('gap', 'g', '', null, i);
+	}
+
+	atRule.remove();
 }
+
+function parseParams(params) {
+	return params
+		.slice(1, -1)
+		.split(/,\s*/)
+		.map((arg) => arg.split(/:\s*/));
+}
+

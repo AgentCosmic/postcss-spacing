@@ -1,12 +1,13 @@
 # PostCSS Spacing
 
-Generate spacing utilities classes with margins and paddings. The classes are named using the format
+Generate spacing utilities classes with margin, padding, and gap. The classes are named using the format
 `{property}{sides}-{size}`.
 
 Where property is one of:
 
 - `m` - for classes that set `margin`
 - `p` - for classes that set `padding`
+- `g` - for classes that set `gap`
 
 Where sides is one of:
 
@@ -58,6 +59,8 @@ Add to your CSS file:
 The argument is important because cssnano will remove it if it does not have an argument.
 
 ## Options
+
+Options can be set from postcss or from the at-rule.
 
 ### unit
 

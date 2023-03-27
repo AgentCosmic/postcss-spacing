@@ -1,7 +1,7 @@
 {
 	"name": "@daltontan/postcss-spacing",
-	"version": "1.1.1",
-	"description": "Generate spacing utilities classes with margins and paddings",
+	"version": "1.2.0",
+	"description": "Generate spacing utilities classes with margin, padding, and gap",
 	"repository": "https://github.com/AgentCosmic/postcss-spacing/",
 	"main": "index.js",
 	"author": "Dalton Tan",
